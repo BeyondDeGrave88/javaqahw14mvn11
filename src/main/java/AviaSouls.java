@@ -1,10 +1,16 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 public class AviaSouls {
     private Ticket[] tickets = new Ticket[0];
 
     /**
      * Вспомогательный метод для имитации добавления элемента в массив
+     *
      * @param current Массив, в который мы хотим добавить элемент
-     * @param ticket Элемент, который мы хотим добавить
+     * @param ticket  Элемент, который мы хотим добавить
      * @return Возвращает новый массив, который выглядит как тот что мы передали,
      * но с добавлением нового элемента в конец
      */
@@ -19,6 +25,7 @@ public class AviaSouls {
 
     /**
      * Метод добавления билета в менеджер
+     *
      * @param ticket Добавляемый билет
      */
     public void add(Ticket ticket) {
@@ -31,8 +38,9 @@ public class AviaSouls {
 
     /**
      * Метод поиска билетов по маршруту
+     *
      * @param from Откуда вылетаем
-     * @param to Куда прилетаем
+     * @param to   Куда прилетаем
      * @return Массив из подходящих билетов
      */
     public Ticket[] search(String from, String to) {
@@ -44,6 +52,31 @@ public class AviaSouls {
                 }
             }
         }
+        Arrays.sort(result); // Сортировка по цене
         return result;
+    }
+
+    public Ticket[] searchAndSortBy(String from, String to, Comparator<Ticket> comparator) {
+        if (comparator == null) {
+            throw new NullPointerException("Comparator cannot be null");
+        }
+
+        List<Ticket> result = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            boolean fromMatch = (from == null) ?
+                    (ticket.getFrom() == null) :
+                    (from.equals(ticket.getFrom()));
+
+            boolean toMatch = (to == null) ?
+                    (ticket.getTo() == null) :
+                    (to.equals(ticket.getTo()));
+
+            if (fromMatch && toMatch) {
+                result.add(ticket);
+            }
+        }
+
+        result.sort(comparator);
+        return result.toArray(new Ticket[0]);
     }
 }
